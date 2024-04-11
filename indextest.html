@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+</head>
+<body>
+    <input type="file" id="file-input" accept=".jpg, .jpeg, .png, .gif">
+    <button onclick="uploadFile()">Upload File</button>
+    <div class="info">
+
+    </div>
+
+    <script>
+        // var history = '';
+        async function uploadFile() {
+            const url = 'https://34fb-49-47-70-185.ngrok-free.app/api/identify'; // Update with the correct upload endpoint
+            const fileInput = document.getElementById('file-input');
+
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const responseData = await response.json();
+                        const history = await responseData.history;
+                        let info = document.querySelector(".info");
+                        info.innerHTML=`${history}`
+                        console.log('File uploaded successfully:', responseData);
+                        alert('File uploaded successfully!');
+                    } else {
+                        console.error('Failed to upload file:', response.statusText);
+                        alert('Failed to upload file.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error occurred during file upload.');
+                }
+            } else {
+                alert('Please select a file to upload.');
+            }
+        }
+    </script>
+</body>
+</html>
